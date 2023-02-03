@@ -1,0 +1,9 @@
+{
+	"id": "ZsarHarsherEquipmentRestrictions",
+	"name": "Harsher Equipment Restrictions",
+	"author": "Zsar",
+	"version": { "major": 1, "minor": 0, "patch": 0 },
+	"description": "- makes the player faction start with no blueprints known",
+	"gameVersion": "0.95.1a-RC6",
+	"modPlugin": "data.scripts.ZsarHarsherEquipmentRestrictionsModPlugin",
+}

@@ -1,0 +1,12 @@
+{
+	"id":"player",
+	"knownShips":{
+		"tags":["core_clearArray"],
+	},
+	"knownFighters":{
+		"tags":["core_clearArray"],
+	},
+	"knownWeapons":{
+		"tags":["core_clearArray"],
+	},
+}
