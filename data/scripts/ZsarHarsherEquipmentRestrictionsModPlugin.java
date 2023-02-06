@@ -8,21 +8,30 @@ import com.fs.starfarer.api.combat.ShipHullSpecAPI;
 import com.fs.starfarer.api.combat.ShipHullSpecAPI.ShipTypeHints;
 import com.fs.starfarer.api.impl.campaign.ids.Items;
 import com.fs.starfarer.api.impl.campaign.ids.Tags;
+import com.fs.starfarer.api.impl.campaign.procgen.DropGroupRow;
 import com.fs.starfarer.api.loading.FighterWingSpecAPI;
 import com.fs.starfarer.api.loading.WeaponSpecAPI;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 @SuppressWarnings("unused") // dynamically loaded
 public class ZsarHarsherEquipmentRestrictionsModPlugin extends BaseModPlugin {
+	private static final String DROP_GROUP_COMMODITY_TAGS = "tags";
+	private static final String BLUEPRINT_PACKAGE_TAG = "package_bp"; // FIXME: Should be a non-mod constant! -Zsar 2023-06-06
+
 	@Override
 	public void onApplicationLoad() {
-		this.addIndividualBlueprintsToItems();
+		final SettingsAPI settings = Global.getSettings();
+		this.addIndividualBlueprintsToItems(settings);
+		this.halveBlueprintPackageDropChance(settings);
 	}
 
-	private void addIndividualBlueprintsToItems() {
-		final SettingsAPI settings = Global.getSettings();
+	private void addIndividualBlueprintsToItems(final SettingsAPI settings) {
 		final List<String> blueprintTags = this.getAccessibleBlueprintPackageTags(settings);
 		blueprintTags.add(Tags.WEAPON_REMNANTS);
 		blueprintTags.add("derelict");
@@ -58,7 +67,7 @@ public class ZsarHarsherEquipmentRestrictionsModPlugin extends BaseModPlugin {
 		final ArrayList<String> blueprintPackages = new ArrayList<String>();
 		final List<SpecialItemSpecAPI> specialItems = settings.getAllSpecialItemSpecs();
 		for (final SpecialItemSpecAPI item : specialItems) {
-			if (item.hasTag("package_bp") && !item.hasTag(Tags.NO_DROP)) {
+			if (item.hasTag(BLUEPRINT_PACKAGE_TAG) && !item.hasTag(Tags.NO_DROP)) {
 				blueprintPackages.add(item.getParams());
 			}
 		}
@@ -106,5 +115,31 @@ public class ZsarHarsherEquipmentRestrictionsModPlugin extends BaseModPlugin {
 		}
 		return !weapon.hasTag(Items.TAG_RARE_BP) // NO_OP
 		    && hasAnyBlueprintTag;
+	}
+
+	private void halveBlueprintPackageDropChance(final SettingsAPI settings) {
+		final Collection<Object> specs = settings.getAllSpecs(DropGroupRow.class);
+		for (final Object spec : specs) {
+			final DropGroupRow dropGroupRow = (DropGroupRow) spec;
+			final String commodity = dropGroupRow.getCommodity();
+			if (!commodity.startsWith(DropGroupRow.ITEM_PREFIX)) {
+				continue;
+			}
+			try {
+				final JSONObject json = new JSONObject("{" + commodity + "}");
+				final JSONObject item = json.getJSONObject(DropGroupRow.ITEM_PREFIX);
+				final JSONArray tags = item.getJSONArray(DROP_GROUP_COMMODITY_TAGS);
+				for (int i = 0; i < tags.length(); ++i) {
+					final String tag = tags.getString(i);
+					if (BLUEPRINT_PACKAGE_TAG.equals(tag)) {
+						dropGroupRow.setFreq(dropGroupRow.getFreq() / 2.f);
+						break;
+					}
+				}
+			}
+			catch (final JSONException wrongCommodity) {
+				continue;
+			}
+		}
 	}
 }
