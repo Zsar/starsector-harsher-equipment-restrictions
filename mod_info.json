@@ -2,8 +2,8 @@
 	"id": "ZsarHarsherEquipmentRestrictions",
 	"name": "Harsher Equipment Restrictions",
 	"author": "Zsar",
-	"version": { "major": 1, "minor": 1, "patch": 0 },
-	"description": "- makes the player faction start with as few blueprints known as the game can stomach",
+	"version": { "major": 2, "minor": 0, "patch": 0 },
+	"description": "- makes the player faction start with as few blueprints known as the game can stomach\n- allows all blueprints to spawn individually\n- allows Explorarium blueprints to spawn\n- allows Remnant blueprints to spawn",
 	"gameVersion": "0.95.1a-RC6",
 	"modPlugin": "data.scripts.ZsarHarsherEquipmentRestrictionsModPlugin",
 }
