@@ -2,11 +2,14 @@
 	"id":"player",
 	"knownShips":{
 		"tags":["core_clearArray"],
+		"hulls":["hound"], # FIXME: workaround for auto designer never giving up
 	},
 	"knownFighters":{
 		"tags":["core_clearArray"],
+		"fighters":["mining_drone_wing"], # FIXME: workaround for auto designer never giving up
 	},
 	"knownWeapons":{
 		"tags":["core_clearArray"],
+		"weapons":["lightmg", "lightmortar", "heavymortar", "arbalest", "hammer_single", "hammerrack", "mininglaser", "miningblaster",], # FIXME: workaround for auto designer never giving up
 	},
 }
